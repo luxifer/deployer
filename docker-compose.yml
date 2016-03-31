@@ -1,0 +1,22 @@
+version: '2'
+services:
+  deployer:
+    build: .
+    ports:
+      - "4567:4567"
+    links:
+      - rethink
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DEPLOYER_RETHINK_HOST: "rethink:28015"
+  rethink:
+    image: rethinkdb
+    ports:
+      - "8080:8080"
+    volumes_from:
+      - rethink_data
+  rethink_data:
+    image: rethinkdb
+    volumes:
+      - /data
