@@ -114,7 +114,7 @@ func launchDeployment(d *Deployment) error {
 	config := container.Config{
 		Image: "xotelia/deployer-ansible",
 		Env: []string{
-			fmt.Sprintf("DEPLOYER_ID=%s", d.JobID),
+			fmt.Sprintf("DEPLOYER_ID=%d", d.JobID),
 			fmt.Sprintf("DEPLOYER_REPO=%s", d.SSHURL),
 			fmt.Sprintf("DEPLOYER_TASK=%s", d.Task),
 			fmt.Sprintf("DEPLOYER_ENV=%s", d.Env),
