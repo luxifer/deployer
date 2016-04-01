@@ -18,3 +18,26 @@ func updateDeployment(d *Deployment) {
 		r.Table("deployment").Get(d.ID).Update(d).RunWrite(rc)
 	}
 }
+
+func getDeployment(id string) (*Deployment, error) {
+	res, err := r.Table("deployment").Get(id).Run(rc)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Close()
+
+	if res.IsNil() {
+		return nil, nil
+	}
+
+	var deployment Deployment
+	err = res.One(&deployment)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &deployment, nil
+}
