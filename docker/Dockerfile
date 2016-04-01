@@ -17,10 +17,8 @@ RUN pip install ansible
 ADD ./deploy /bin/deploy
 ADD ./config /root/.ssh/config
 
-RUN locale-gen fr_FR.UTF-8
-
-ENV LANG fr_FR.UTF-8
-ENV LANGUAGE fr_FR:fr
-ENV LC_ALL fr_FR.UTF-8
+ENV LANG C.UTF-8
+ENV LANGUAGE C.UTF-8
+ENV LC_ALL C.UTF-8
 
 ENTRYPOINT ["/bin/deploy"]
