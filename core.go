@@ -72,8 +72,10 @@ func processDeploy(payload *github.DeploymentEvent) {
 
 	if err != nil {
 		log.Print(err)
-		notifyDeploymentStatus(&deployment, githubStatusSuccess, hipchat.ColorRed)
+		createDeploymentStatus(&deployment, githubStatusError)
+		notifyDeploymentStatus(&deployment, githubStatusError, hipchat.ColorRed)
 	} else {
+		createDeploymentStatus(&deployment, githubStatusSuccess)
 		notifyDeploymentStatus(&deployment, githubStatusSuccess, hipchat.ColorGreen)
 	}
 
