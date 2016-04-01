@@ -65,6 +65,30 @@ func deploymentHandler(w http.ResponseWriter, req *http.Request, ps httprouter.P
 	}
 }
 
+func cancelHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
+	id := ps.ByName("id")
+	deployment, err := getDeployment(id)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if deployment == nil {
+		fmt.Fprintf(w, "Deployment \"%s\" not found", id)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	if deployment.Status != statusPending {
+		http.Error(w, "Cannot cancel a finished deployment", http.StatusBadRequest)
+		return
+	}
+
+	cancelDeployment(deployment)
+	http.Redirect(w, req, fmt.Sprintf("/deployment/%s", deployment.ID), http.StatusFound)
+}
+
 func streamHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 	deployment, err := getDeployment(id)
@@ -80,7 +104,7 @@ func streamHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Param
 	}
 
 	if deployment.Status != statusPending {
-		http.Error(w, "Cannot stream a finished event", http.StatusBadRequest)
+		http.Error(w, "Cannot stream a finished deployment", http.StatusBadRequest)
 		return
 	}
 
