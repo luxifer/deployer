@@ -1,14 +1,17 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/andybons/hipchat"
+	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/container"
 	"github.com/docker/engine-api/types/network"
@@ -58,6 +61,7 @@ func processDeploy(payload *github.DeploymentEvent) {
 		Ref:     *payload.Deployment.Ref,
 		Author:  *payload.Sender.Login,
 		Started: time.Now(),
+		Status:  statusPending,
 	}
 
 	updateDeployment(&deployment)
@@ -72,9 +76,11 @@ func processDeploy(payload *github.DeploymentEvent) {
 
 	if err != nil {
 		log.Print(err)
+		deployment.Status = statusError
 		createDeploymentStatus(&deployment, githubStatusError)
 		notifyDeploymentStatus(&deployment, githubStatusError, hipchat.ColorRed)
 	} else {
+		deployment.Status = statusSuccess
 		createDeploymentStatus(&deployment, githubStatusSuccess)
 		notifyDeploymentStatus(&deployment, githubStatusSuccess, hipchat.ColorGreen)
 	}
@@ -107,6 +113,20 @@ func notifyDeploymentStatus(d *Deployment, state string, color string) {
 		Notify:        true,
 	}
 	hc.PostMessage(req)
+}
+
+func streamDeployment(d *Deployment) (io.ReadCloser, error) {
+	ctx := context.Background()
+	name := fmt.Sprintf("deployer_%d", d.JobID)
+
+	logOpts := types.ContainerLogsOptions{
+		ContainerID: name,
+		ShowStdout:  true,
+		ShowStderr:  true,
+		Follow:      true,
+	}
+
+	return dc.ContainerLogs(ctx, logOpts)
 }
 
 func launchDeployment(d *Deployment) error {
@@ -156,6 +176,8 @@ func launchDeployment(d *Deployment) error {
 		return err
 	}
 
+	d.ExitCode = exitCode
+
 	logOpts := types.ContainerLogsOptions{
 		ContainerID: c.ID,
 		ShowStdout:  true,
@@ -168,9 +190,11 @@ func launchDeployment(d *Deployment) error {
 	if err != nil {
 		return err
 	} else {
-		defer reader.Close()
-		data, _ := ioutil.ReadAll(reader)
-		d.Logs = data
+		var b bytes.Buffer
+		w := bufio.NewWriter(&b)
+		stdcopy.StdCopy(w, w, reader)
+		w.Flush()
+		d.Logs = b.Bytes()
 	}
 
 	if exitCode != 0 {
