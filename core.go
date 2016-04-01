@@ -129,6 +129,13 @@ func streamDeployment(d *Deployment) (io.ReadCloser, error) {
 	return dc.ContainerLogs(ctx, logOpts)
 }
 
+func cancelDeployment(d *Deployment) error {
+	ctx := context.Background()
+	name := fmt.Sprintf("deployer_%d", d.JobID)
+
+	return dc.ContainerStop(ctx, name, 0)
+}
+
 func launchDeployment(d *Deployment) error {
 	ctx := context.Background()
 	name := fmt.Sprintf("deployer_%d", d.JobID)
