@@ -48,7 +48,10 @@
         </div>
         <div class="panel-body">
           <div class="alert alert-{{.PanelColor}}" role="alert">
-            <i class="fa fa-{{.Icon}}"></i> Deploy <strong>{{.Status}}</strong> on <i class="fa fa-code-fork"></i> {{.Ref}}
+            <i class="fa {{.Icon}}"></i> Deploy <strong>{{.Status}}</strong> on <i class="fa fa-code-fork"></i> {{.Ref}}
+            {{if eq .Status "pending"}}
+              <a href="/deployment/{{.ID}}/cancel" class="btn btn-xs btn-danger pull-right">Cancel</a>
+            {{end}}
           </div>
           <dl class="dl-horizontal">
             <dt>Started</dt>
