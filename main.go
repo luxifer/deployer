@@ -70,6 +70,7 @@ func main() {
 	mux := httprouter.New()
 	mux.POST("/event_handler", eventHandler)
 	mux.GET("/deployment/:id", deploymentHandler)
+	mux.GET("/deployment/:id/stream", streamHandler)
 
 	log.Printf("Listening on %s:%s...", bind, port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", bind, port), handlers.LoggingHandler(os.Stdout, mux)))
