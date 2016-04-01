@@ -60,13 +60,13 @@ func (d *Deployment) Icon() string {
 
 	switch d.Status {
 	case statusPending:
-		icon = "spinner"
+		icon = "fa-spinner fa-spin"
 	case statusSuccess:
-		icon = "check"
+		icon = "fa-check"
 	case statusError:
-		icon = "times"
+		icon = "fa-times"
 	default:
-		icon = "question"
+		icon = "fa-question"
 	}
 
 	return icon
