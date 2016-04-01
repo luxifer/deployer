@@ -14,13 +14,13 @@ import (
 )
 
 func eventHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var payload github.DeploymentEvent
-	body, _ := ioutil.ReadAll(r.Body)
-	json.Unmarshal(body, &payload)
 	eventType := r.Header.Get("X-GitHub-Event")
+	body, _ := ioutil.ReadAll(r.Body)
 
 	switch eventType {
 	case "deployment":
+		var payload github.DeploymentEvent
+		json.Unmarshal(body, &payload)
 		go processDeploy(&payload)
 	}
 
