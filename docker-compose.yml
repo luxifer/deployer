@@ -12,9 +12,3 @@ services:
       DEPLOYER_RETHINK_HOST: "rethink:28015"
   rethink:
     image: rethinkdb
-    volumes_from:
-      - rethink_data
-  rethink_data:
-    image: rethinkdb
-    volumes:
-      - /data
