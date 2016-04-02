@@ -59,6 +59,7 @@ func processDeploy(payload *github.DeploymentEvent) {
 		Task:    *payload.Deployment.Task,
 		Env:     *payload.Deployment.Environment,
 		Ref:     *payload.Deployment.Ref,
+		SHA:     *payload.Deployment.SHA,
 		Author:  *payload.Sender.Login,
 		Started: time.Now(),
 		Status:  statusPending,

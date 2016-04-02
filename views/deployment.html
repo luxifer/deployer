@@ -64,6 +64,10 @@
               <p class="heading">Duration</p>
               <p class="title">{{.Duration}}</p>
             </div>
+            <div class="navbar-item is-text-centered">
+              <p class="heading">SHA</p>
+              <p class="title"><a href="{{.HTTPURL}}/commit/{{.SHA}}">{{.ShortSHA}}</a></p>
+            </div>
           </nav>
           <div class="console" id="logs">{{.LogToString}}</div>
           <div id="bottom"></div>

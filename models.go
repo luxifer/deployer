@@ -26,6 +26,7 @@ type Deployment struct {
 	Task     string
 	Env      string
 	Ref      string
+	SHA      string
 	Author   string
 	Started  time.Time
 	Finished time.Time
@@ -78,4 +79,8 @@ func (d *Deployment) LogToString() string {
 
 func (d *Deployment) Duration() time.Duration {
 	return d.Finished.Sub(d.Started)
+}
+
+func (d *Deployment) ShortSHA() string {
+	return d.SHA[:7]
 }
