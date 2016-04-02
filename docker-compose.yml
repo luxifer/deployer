@@ -12,8 +12,6 @@ services:
       DEPLOYER_RETHINK_HOST: "rethink:28015"
   rethink:
     image: rethinkdb
-    ports:
-      - "8080:8080"
     volumes_from:
       - rethink_data
   rethink_data:
