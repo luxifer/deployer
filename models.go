@@ -49,7 +49,7 @@ func (d *Deployment) PanelColor() string {
 	case statusError:
 		color = "danger"
 	default:
-		color = "default"
+		color = "info"
 	}
 
 	return color

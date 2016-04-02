@@ -11,7 +11,7 @@
     <title>{{.Owner}}/{{.Name}} #{{.JobID}}</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.0.17/css/bulma.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro|Roboto:400,700' rel='stylesheet' type='text/css'>
 
@@ -40,40 +40,39 @@
 
     <div class="container">
 
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">
-            <a href="{{.HTTPURL}}">{{.Owner}}/{{.Name}}</a> <i class="fa fa-arrow-right"></i> <span class="label label-default">{{.Env}}</span>
-          </h3>
-        </div>
-        <div class="panel-body">
-          <div class="alert alert-{{.PanelColor}}" role="alert">
+      <nav class="panel">
+        <p class="panel-heading">
+          <a href="{{.HTTPURL}}">{{.Owner}}/{{.Name}}</a> <span class="icon"><i class="fa fa-arrow-right"></i></span> <span class="tag is-info">{{.Env}}</span>
+        </p>
+        <div class="panel-block">
+          <div class="notification is-warning is-{{.PanelColor}}">
             <i class="fa {{.Icon}}"></i> Deploy <strong>{{.Status}}</strong> on <i class="fa fa-code-fork"></i> {{.Ref}}
             {{if eq .Status "pending"}}
-              <a href="/deployment/{{.ID}}/cancel" class="btn btn-xs btn-danger pull-right">Cancel</a>
+              <a class="button is-small is-danger pull-right" href="/deployment/{{.ID}}/cancel">Cancel</a>
             {{end}}
           </div>
-          <dl class="dl-horizontal">
-            <dt>Started</dt>
-            <dd>{{.Started|date_format}}</dd>
-            <dt>Finished</dt>
-            <dd>{{.Finished|date_format}}</dd>
-            <dt>Duration</dt>
-            <dd>{{.Duration}}</dd>
-          </dl>
+          <nav class="navbar">
+            <div class="navbar-item is-text-centered">
+              <p class="heading">Started</p>
+              <p class="title">{{.Started|date_format}}</p>
+            </div>
+            <div class="navbar-item is-text-centered">
+              <p class="heading">Finished</p>
+              <p class="title">{{.Finished|date_format}}</p>
+            </div>
+            <div class="navbar-item is-text-centered">
+              <p class="heading">Duration</p>
+              <p class="title">{{.Duration}}</p>
+            </div>
+          </nav>
           <div class="console" id="logs">{{.LogToString}}</div>
           <div id="bottom"></div>
         </div>
-      </div>
+      </nav>
 
     </div><!-- /.container -->
 
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     {{if eq .Status "pending"}}
     <script type="text/javascript">
       var evtSource = new EventSource("/deployment/{{.ID}}/stream")
