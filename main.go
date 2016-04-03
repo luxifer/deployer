@@ -69,6 +69,7 @@ func main() {
 
 	mux := httprouter.New()
 	mux.POST("/event_handler", eventHandler)
+	mux.GET("/deployment", listHandler)
 	mux.GET("/deployment/:id", deploymentHandler)
 	mux.GET("/deployment/:id/stream", streamHandler)
 	mux.GET("/deployment/:id/cancel", cancelHandler)
