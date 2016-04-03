@@ -78,9 +78,17 @@ func (d *Deployment) LogToString() string {
 }
 
 func (d *Deployment) Duration() time.Duration {
-	return d.Finished.Sub(d.Started)
+	if d.Finished.IsZero() {
+		return time.Now().Sub(d.Started)
+	} else {
+		return d.Finished.Sub(d.Started)
+	}
 }
 
 func (d *Deployment) ShortSHA() string {
-	return d.SHA[:7]
+	if len(d.SHA) > 7 {
+		return d.SHA[:7]
+	} else {
+		return d.SHA
+	}
 }
