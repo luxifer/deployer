@@ -1,94 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
+{{define "title"}}
+{{.Owner}}/{{.Name}} #{{.JobID}}
+{{end}}
 
-    <title>{{.Owner}}/{{.Name}} #{{.JobID}}</title>
+{{define "body"}}
+<div class="container">
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.0.17/css/bulma.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro|Roboto:400,700' rel='stylesheet' type='text/css'>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <div class="navbar-item">
+        <a href="/deployment" class="button is-outlined">Back to list</a>
+      </div>
+    </div>
+  </nav>
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <style type="text/css">
-      body {
-        padding: 20px;
-        font-family: 'Roboto', sans-serif;
-      }
-
-      .console {
-        background-color: rgb(36, 41, 50);
-        color: rgb(250, 250, 250);
-        white-space: pre;
-        font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
-        padding: 10px;
-        overflow-x: auto;
-      }
-    </style>
-  </head>
-
-  <body>
-
-    <div class="container">
-
-      <nav class="panel">
-        <p class="panel-heading">
-          <a href="{{.HTTPURL}}">{{.Owner}}/{{.Name}}</a> <span class="icon"><i class="fa fa-arrow-right"></i></span> <span class="tag is-info">{{.Env}}</span>
-        </p>
-        <div class="panel-block">
-          <div class="notification is-{{.PanelColor}}">
-            <i class="fa {{.Icon}}"></i> Deploy <strong>{{.Status}}</strong> on <i class="fa fa-code-fork"></i> {{.Ref}}
-            {{if eq .Status "pending"}}
-              <a class="button is-small is-danger pull-right" href="/deployment/{{.ID}}/cancel">Cancel</a>
-            {{end}}
-          </div>
-          <nav class="navbar">
-            <div class="navbar-item is-text-centered">
-              <p class="heading">Started</p>
-              <p class="title">{{.Started|date_format}}</p>
-            </div>
-            <div class="navbar-item is-text-centered">
-              <p class="heading">Finished</p>
-              <p class="title">{{.Finished|date_format}}</p>
-            </div>
-            <div class="navbar-item is-text-centered">
-              <p class="heading">Duration</p>
-              <p class="title">{{.Duration}}</p>
-            </div>
-            <div class="navbar-item is-text-centered">
-              <p class="heading">SHA</p>
-              <p class="title"><a href="{{.HTTPURL}}/commit/{{.SHA}}">{{.ShortSHA}}</a></p>
-            </div>
-          </nav>
-          <div class="console" id="logs">{{.LogToString}}</div>
-          <div id="bottom"></div>
+  <nav class="panel">
+    <p class="panel-heading">
+      <a href="{{.HTTPURL}}">{{.Owner}}/{{.Name}}</a> <span class="icon"><i class="fa fa-arrow-right"></i></span> <span class="tag is-info">{{.Env}}</span>
+    </p>
+    <div class="panel-block">
+      <div class="message is-{{.PanelColor}}">
+        <div class="message-header">
+          {{.Status}}
+        </div>
+        <div class="message-body">
+          <i class="fa {{.Icon}}"></i> Deploy <strong>{{.Status}}</strong> on <i class="fa fa-code-fork"></i> {{.Ref}}
+          {{if eq .Status "pending"}}
+            <a class="button is-small is-danger pull-right" href="/deployment/{{.ID}}/cancel">Cancel</a>
+          {{end}}
+        </div>
+      </div>
+      <nav class="navbar">
+        <div class="navbar-item is-text-centered">
+          <p class="heading">Started</p>
+          <p class="title" title="{{.Started}}">{{.Started|ago}}</p>
+        </div>
+        <div class="navbar-item is-text-centered">
+          <p class="heading">Finished</p>
+          <p class="title" title="{{.Finished}}">{{.Finished|ago}}</p>
+        </div>
+        <div class="navbar-item is-text-centered">
+          <p class="heading">Duration</p>
+          <p class="title">{{.Duration}}</p>
+        </div>
+        <div class="navbar-item is-text-centered">
+          <p class="heading">SHA</p>
+          <p class="title"><a href="{{.HTTPURL}}/commit/{{.SHA}}">{{.ShortSHA}}</a></p>
         </div>
       </nav>
+      <div class="console" id="logs">{{.LogToString}}</div>
+      <div id="bottom"></div>
+    </div>
+  </nav>
 
-    </div><!-- /.container -->
+</div><!-- /.container -->
 
-    <!-- Placed at the end of the document so the pages load faster -->
-    {{if eq .Status "pending"}}
-    <script type="text/javascript">
-      var evtSource = new EventSource("/deployment/{{.ID}}/stream")
-      var logs = document.getElementById("logs")
-      var bottom = document.getElementById("bottom")
-      evtSource.onmessage = function(e) {
-        var message = document.createTextNode(e.data)
-        logs.appendChild(message)
-        bottom.scrollIntoView()
-      }
-    </script>
-    {{end}}
-  </body>
-</html>
+{{if eq .Status "pending"}}
+<script type="text/javascript">
+  var evtSource = new EventSource("/deployment/{{.ID}}/stream")
+  var logs = document.getElementById("logs")
+  var bottom = document.getElementById("bottom")
+  evtSource.onmessage = function(e) {
+    var message = document.createTextNode(e.data)
+    logs.appendChild(message)
+    bottom.scrollIntoView()
+  }
+</script>
+{{end}}
+{{end}}

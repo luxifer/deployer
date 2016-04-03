@@ -1,0 +1,27 @@
+{{define "title"}}
+Deployment list
+{{end}}
+
+{{define "body"}}
+<div class="container">
+  {{range $index, $deployment := .}}
+  <article class="media">
+    <figure class="media-left">
+      <span class="lettrine">
+        {{$deployment.Name|lettrine}}
+      </span>
+    </figure>
+    <div class="media-content">
+      <div class="content">
+        <h4>
+          <span class="icon is-{{$deployment.PanelColor}}"><i class="fa {{$deployment.Icon}}"></i></span> {{$deployment.Status}} deploy on <i class="fa fa-code-fork"></i> <strong>{{$deployment.Ref}}</strong> <i class="fa fa-arrow-right"></i> <span class="tag is-info">{{$deployment.Env}}</span>
+        </h4>
+        <p>
+          <a href="{{$deployment.HTTPURL}}">{{$deployment.Owner}}/{{$deployment.Name}}</a> <i class="fa fa-hashtag"></i><a href="/deployment/{{$deployment.ID}}">{{$deployment.JobID}}</a> <i class="fa fa-clock-o"></i> <span title="{{$deployment.Started}}">{{$deployment.Started|ago}}</span>
+        </p>
+      </div>
+    </div>
+  </article>
+  {{end}}
+</div>
+{{end}}

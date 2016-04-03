@@ -7,24 +7,33 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/docker/docker/pkg/stdcopy"
+	"github.com/dustin/go-humanize"
 	"github.com/google/go-github/github"
 	"github.com/julienschmidt/httprouter"
 	"github.com/manucorporat/sse"
 )
 
 var (
-	funcMap template.FuncMap
+	tmpl map[string]*template.Template
 )
 
 func init() {
-	funcMap = template.FuncMap{
-		"date_format": func(date time.Time) string {
-			return date.Format(time.Kitchen)
+	funcMap := template.FuncMap{
+		"lettrine": func(title string) string {
+			return strings.Title(title)[:1]
+		},
+		"ago": func(date time.Time) string {
+			return humanize.Time(date)
 		},
 	}
+
+	tmpl = make(map[string]*template.Template)
+	tmpl["list"] = template.Must(template.New("list").Funcs(funcMap).ParseFiles("views/list.html", "views/base.html"))
+	tmpl["deployment"] = template.Must(template.New("deployment").Funcs(funcMap).ParseFiles("views/deployment.html", "views/base.html"))
 }
 
 func eventHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -39,6 +48,17 @@ func eventHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+}
+
+func listHandler(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
+	deployments, err := listDeployment()
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	renderTemplate(w, "list", deployments)
 }
 
 func deploymentHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
@@ -56,13 +76,7 @@ func deploymentHandler(w http.ResponseWriter, req *http.Request, ps httprouter.P
 		return
 	}
 
-	tmpl := template.Must(template.New("deployment.html").Funcs(funcMap).ParseFiles("views/deployment.html"))
-	err = tmpl.Execute(w, &deployment)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	renderTemplate(w, "deployment", &deployment)
 }
 
 func cancelHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
@@ -136,4 +150,12 @@ func (w *StreamWriter) Write(data []byte) (int, error) {
 	w.writer.(http.Flusher).Flush()
 	w.count += len(data)
 	return len(data), err
+}
+
+func renderTemplate(w http.ResponseWriter, name string, data interface{}) {
+	err := tmpl[name].ExecuteTemplate(w, "base", data)
+
+	if err != nil {
+		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+	}
 }
