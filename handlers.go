@@ -27,7 +27,11 @@ func init() {
 			return strings.Title(title)[:1]
 		},
 		"ago": func(date time.Time) string {
-			return humanize.Time(date)
+			if date.IsZero() {
+				return strings.Title(statusPending)
+			} else {
+				return humanize.Time(date)
+			}
 		},
 	}
 
