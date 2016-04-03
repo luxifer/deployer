@@ -43,7 +43,7 @@ func getDeployment(id string) (*Deployment, error) {
 }
 
 func listDeployment() ([]*Deployment, error) {
-	res, err := r.Table("deployment").Run(rc)
+	res, err := r.Table("deployment").OrderBy(r.OrderByOpts{Index: r.Desc("Started")}).Run(rc)
 
 	if err != nil {
 		return nil, err
