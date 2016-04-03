@@ -41,3 +41,23 @@ func getDeployment(id string) (*Deployment, error) {
 
 	return &deployment, nil
 }
+
+func listDeployment() ([]*Deployment, error) {
+	res, err := r.Table("deployment").Run(rc)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Close()
+
+	var deployments []*Deployment
+
+	err = res.All(&deployments)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return deployments, nil
+}
