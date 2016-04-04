@@ -61,13 +61,13 @@ func (d *Deployment) Icon() string {
 
 	switch d.Status {
 	case statusPending:
-		icon = "fa-spinner fa-spin"
+		icon = "octicon-sync"
 	case statusSuccess:
-		icon = "fa-check"
+		icon = "octicon-check"
 	case statusError:
-		icon = "fa-times"
+		icon = "octicon-x"
 	default:
-		icon = "fa-question"
+		icon = "octicon-question"
 	}
 
 	return icon
