@@ -66,8 +66,8 @@
     bottom.scrollIntoView();
   }
 {{else}}
-  var convert = new Filter({stream: false, newline: false});
-  logs.innerHTML = convert.toHtml(logs.innerHTML);
+  var converter = new Filter({stream: false, newline: false});
+  logs.innerHTML = converter.toHtml(logs.innerHTML);
 {{end}}
 </script>
 {{end}}
