@@ -54,16 +54,20 @@
 
 </div>
 
-{{if eq .Status "pending"}}
+<script src="/public/app.js"></script>
 <script type="text/javascript">
-  var evtSource = new EventSource("/deployment/{{.ID}}/stream")
   var logs = document.getElementById("logs")
+{{if eq .Status "pending"}}
+  var evtSource = new EventSource("/deployment/{{.ID}}/stream")
   var bottom = document.getElementById("bottom")
+  var converter = new Filter({stream: true, newline: false});
   evtSource.onmessage = function(e) {
-    var message = document.createTextNode(e.data)
-    logs.appendChild(message)
-    bottom.scrollIntoView()
+    logs.innerHTML += converter.toHtml(e.data);
+    bottom.scrollIntoView();
   }
-</script>
+{{else}}
+  var convert = new Filter({stream: false, newline: false});
+  logs.innerHTML = convert.toHtml(logs.innerHTML);
 {{end}}
+</script>
 {{end}}
