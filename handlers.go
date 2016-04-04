@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/dustin/go-humanize"
 	"github.com/google/go-github/github"
 	"github.com/julienschmidt/httprouter"
@@ -137,7 +137,7 @@ func streamHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Param
 	w.Header().Set("Content-Type", sse.ContentType)
 
 	rw := &StreamWriter{w, 0}
-	stdcopy.StdCopy(rw, rw, reader)
+	io.Copy(rw, reader)
 }
 
 type StreamWriter struct {

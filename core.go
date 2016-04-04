@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/andybons/hipchat"
-	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/container"
 	"github.com/docker/engine-api/types/network"
@@ -150,7 +149,9 @@ func launchDeployment(d *Deployment) error {
 	}
 
 	config := container.Config{
-		Image: defaultImage,
+		Image:     defaultImage,
+		Tty:       true,
+		OpenStdin: true,
 		Env: []string{
 			fmt.Sprintf("DEPLOYER_ID=%d", d.JobID),
 			fmt.Sprintf("DEPLOYER_REPO=%s", d.SSHURL),
@@ -208,7 +209,7 @@ func launchDeployment(d *Deployment) error {
 	} else {
 		var b bytes.Buffer
 		w := bufio.NewWriter(&b)
-		stdcopy.StdCopy(w, w, reader)
+		io.Copy(w, reader)
 		w.Flush()
 		d.Logs = b.Bytes()
 	}
