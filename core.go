@@ -27,6 +27,8 @@ var (
 	githubStatusPending = "pending"
 	githubStatusSuccess = "success"
 	githubStatusError   = "failure"
+
+	defaultImage = "xotelia/deployer-ansible"
 )
 
 func init() {
@@ -141,8 +143,14 @@ func launchDeployment(d *Deployment) error {
 	ctx := context.Background()
 	name := fmt.Sprintf("deployer_%d", d.JobID)
 
+	_, err := dc.ImagePull(ctx, types.ImagePullOptions{ImageID: defaultImage}, nil)
+
+	if err != nil {
+		return err
+	}
+
 	config := container.Config{
-		Image: "xotelia/deployer-ansible",
+		Image: defaultImage,
 		Env: []string{
 			fmt.Sprintf("DEPLOYER_ID=%d", d.JobID),
 			fmt.Sprintf("DEPLOYER_REPO=%s", d.SSHURL),
