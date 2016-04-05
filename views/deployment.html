@@ -25,7 +25,7 @@
         <div class="message-body">
           <i class="octicon {{.Icon}}"></i> Deploy <strong>{{.Status}}</strong> on <span class="octicon octicon-git-branch"></span> {{.Ref}}
           {{if eq .Status "pending"}}
-            <a class="button is-small is-danger pull-right" href="/deployment/{{.ID}}/cancel">Cancel</a>
+            <a class="button is-small is-danger is-pulled-right" href="/deployment/{{.ID}}/cancel">Cancel</a>
           {{end}}
         </div>
       </div>
