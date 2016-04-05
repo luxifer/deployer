@@ -107,6 +107,23 @@ func cancelHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Param
 	http.Redirect(w, req, fmt.Sprintf("/deployment/%s", deployment.ID), http.StatusFound)
 }
 
+func logsHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
+	id := ps.ByName("id")
+	deployment, err := getDeployment(id)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if deployment == nil {
+		http.Error(w, fmt.Sprintf("Deployment \"%s\" not found", id), http.StatusNotFound)
+		return
+	}
+
+	fmt.Fprint(w, deployment.LogToString())
+}
+
 func streamHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	id := ps.ByName("id")
 	deployment, err := getDeployment(id)

@@ -71,6 +71,7 @@ func main() {
 	mux.POST("/event_handler", eventHandler)
 	mux.GET("/deployment", listHandler)
 	mux.GET("/deployment/:id", deploymentHandler)
+	mux.GET("/deployment/:id/logs", logsHandler)
 	mux.GET("/deployment/:id/stream", streamHandler)
 	mux.GET("/deployment/:id/cancel", cancelHandler)
 	mux.ServeFiles("/public/*filepath", http.Dir("public"))

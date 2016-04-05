@@ -47,7 +47,7 @@
           <p class="title"><a href="{{.HTTPURL}}/commit/{{.SHA}}">{{.ShortSHA}}</a></p>
         </div>
       </nav>
-      <div class="console" id="logs">{{.LogToString}}</div>
+      <div class="console" id="logs"></div>
       <div id="bottom"></div>
     </div>
   </nav>
@@ -56,8 +56,8 @@
 
 <script src="/public/app.js"></script>
 <script type="text/javascript">
-  var logs = document.getElementById("logs")
-{{if eq .Status "pending"}}
+  var logs = document.getElementById("logs");
+  {{if eq .Status "pending"}}
   var evtSource = new EventSource("/deployment/{{.ID}}/stream")
   var bottom = document.getElementById("bottom")
   var converter = new Filter({stream: true, newline: false});
@@ -65,9 +65,15 @@
     logs.innerHTML += converter.toHtml(e.data);
     bottom.scrollIntoView();
   }
-{{else}}
+  {{else}}
   var converter = new Filter({stream: false, newline: false});
-  logs.innerHTML = converter.toHtml(logs.innerHTML);
-{{end}}
+  window.fetch("/deployment/{{.ID}}/logs")
+    .then(function(response) {
+      return response.text();
+    })
+    .then(function(text) {
+      logs.innerHTML = converter.toHtml(text);
+    });
+  {{end}}
 </script>
 {{end}}
