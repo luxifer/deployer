@@ -56,6 +56,7 @@ func eventHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		messageMAC, _ := hex.DecodeString(r.Header.Get("X-Hub-Signature")[5:])
 		if !checkMAC(body, messageMAC, []byte(webhookSecret)) {
 			http.Error(w, "Signatures didn't match!", http.StatusForbidden)
+			return
 		}
 	}
 
