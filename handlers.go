@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/hmac"
 	"crypto/sha1"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -52,7 +53,9 @@ func eventHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	body, _ := ioutil.ReadAll(r.Body)
 
 	if webhookSecret != "" {
-		if !checkMAC(body, []byte(r.Header.Get("X-Hub-Signature")[5:]), []byte(webhookSecret)) {
+		actualSignature := r.Header.Get("X-Hub-Signature")[5:]
+		expectedSignature := computeSignature(body, []byte(webhookSecret))
+		if expectedSignature != actualSignature {
 			http.Error(w, "Signatures didn't match!", http.StatusForbidden)
 		}
 	}
@@ -221,9 +224,8 @@ func renderTemplate(w http.ResponseWriter, name string, data interface{}) {
 }
 
 // CheckMAC reports whether messageMAC is a valid HMAC tag for message.
-func checkMAC(message, messageMAC, key []byte) bool {
+func computeSignature(message, key []byte) string {
 	mac := hmac.New(sha1.New, key)
 	mac.Write(message)
-	expectedMAC := mac.Sum(nil)
-	return hmac.Equal(messageMAC, expectedMAC)
+	return hex.EncodeToString(mac.Sum(nil))
 }
