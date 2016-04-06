@@ -5,11 +5,11 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"strings"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/andybons/hipchat"
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/container"
@@ -35,18 +35,21 @@ func init() {
 
 	if host == "" {
 		log.Fatal("DEPLOYER_HOST is required")
+		os.Exit(1)
 	}
 
 	room = os.Getenv("DEPLOYER_HIPCHAT_ROOM")
 
 	if room == "" {
 		log.Fatal("DEPLOYER_HIPCHAT_ROOM is required")
+		os.Exit(1)
 	}
 
 	sshKeyPath = os.Getenv("DEPLOYER_SSHKEY_PATH")
 
 	if sshKeyPath == "" {
 		log.Fatal("DEPLOYER_SSHKEY_PATH is required")
+		os.Exit(1)
 	}
 }
 

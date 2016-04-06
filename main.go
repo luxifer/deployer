@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/andybons/hipchat"
 	r "github.com/dancannon/gorethink"
 	"github.com/docker/engine-api/client"
@@ -29,6 +29,7 @@ func main() {
 
 	if hipchatToken == "" {
 		log.Fatal("DEPLOYER_HIPCHAT_TOKEN is required")
+		os.Exit(1)
 	}
 
 	dockerHost := os.Getenv("DEPLOYER_DOCKER_HOST")
@@ -41,6 +42,7 @@ func main() {
 
 	if rethinkHost == "" {
 		log.Fatal("DEPLOYER_RETHINK_HOST is required")
+		os.Exit(1)
 	}
 
 	githubToken := os.Getenv("DEPLOYER_GITHUB_TOKEN")

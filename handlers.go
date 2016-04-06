@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/dustin/go-humanize"
 	"github.com/google/go-github/github"
 	"github.com/julienschmidt/httprouter"
@@ -58,6 +59,7 @@ func listHandler(w http.ResponseWriter, req *http.Request, _ httprouter.Params) 
 	deployments, err := listDeployment()
 
 	if err != nil {
+		log.Error(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -70,6 +72,9 @@ func deploymentHandler(w http.ResponseWriter, req *http.Request, ps httprouter.P
 	deployment, err := getDeployment(id)
 
 	if err != nil {
+		log.WithFields(log.Fields{
+			"deployment": id,
+		}).Error(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -88,6 +93,9 @@ func cancelHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Param
 	deployment, err := getDeployment(id)
 
 	if err != nil {
+		log.WithFields(log.Fields{
+			"deployment": id,
+		}).Error(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -103,7 +111,16 @@ func cancelHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Param
 		return
 	}
 
-	cancelDeployment(deployment)
+	err = cancelDeployment(deployment)
+
+	if err != nil {
+		log.WithFields(log.Fields{
+			"deployment": id,
+		}).Error(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	http.Redirect(w, req, fmt.Sprintf("/deployment/%s", deployment.ID), http.StatusFound)
 }
 
@@ -112,6 +129,9 @@ func logsHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Params)
 	deployment, err := getDeployment(id)
 
 	if err != nil {
+		log.WithFields(log.Fields{
+			"deployment": id,
+		}).Error(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -129,6 +149,9 @@ func streamHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Param
 	deployment, err := getDeployment(id)
 
 	if err != nil {
+		log.WithFields(log.Fields{
+			"deployment": id,
+		}).Error(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -147,6 +170,9 @@ func streamHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Param
 	defer reader.Close()
 
 	if err != nil {
+		log.WithFields(log.Fields{
+			"deployment": id,
+		}).Error(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -177,6 +203,7 @@ func renderTemplate(w http.ResponseWriter, name string, data interface{}) {
 	err := tmpl[name].ExecuteTemplate(w, "base", data)
 
 	if err != nil {
+		log.Error(err)
 		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 	}
 }
