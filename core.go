@@ -93,7 +93,11 @@ func processDeploy(payload *github.DeploymentEvent) {
 }
 
 func createDeploymentStatus(d *Deployment, state string) {
-	status := github.DeploymentStatusRequest{State: &state}
+	targetURL := fmt.Sprintf("%s/deployment/%s", host, d.ID)
+	status := github.DeploymentStatusRequest{
+		State:     &state,
+		TargetURL: &targetURL,
+	}
 	gc.Repositories.CreateDeploymentStatus(d.Owner, d.Name, d.JobID, &status)
 }
 
