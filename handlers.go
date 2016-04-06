@@ -1,12 +1,15 @@
 package main
 
 import (
+	"crypto/hmac"
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -19,10 +22,13 @@ import (
 )
 
 var (
-	tmpl map[string]*template.Template
+	tmpl          map[string]*template.Template
+	webhookSecret string
 )
 
 func init() {
+	webhookSecret = os.Getenv("DEPLOYER_WEBHOOK_SECRET")
+
 	funcMap := template.FuncMap{
 		"lettrine": func(title string) string {
 			return strings.Title(title)[:1]
@@ -44,6 +50,12 @@ func init() {
 func eventHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	eventType := r.Header.Get("X-GitHub-Event")
 	body, _ := ioutil.ReadAll(r.Body)
+
+	if webhookSecret != "" {
+		if !checkMAC(body, []byte(r.Header.Get("X-Hub-Signature")[5:]), []byte(webhookSecret)) {
+			http.Error(w, "Signatures didn't match!", http.StatusForbidden)
+		}
+	}
 
 	switch eventType {
 	case "deployment":
@@ -206,4 +218,12 @@ func renderTemplate(w http.ResponseWriter, name string, data interface{}) {
 		log.Error(err)
 		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 	}
+}
+
+// CheckMAC reports whether messageMAC is a valid HMAC tag for message.
+func checkMAC(message, messageMAC, key []byte) bool {
+	mac := hmac.New(sha1.New, key)
+	mac.Write(message)
+	expectedMAC := mac.Sum(nil)
+	return hmac.Equal(messageMAC, expectedMAC)
 }
