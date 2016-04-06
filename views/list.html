@@ -7,7 +7,7 @@ Deployment list
   {{range $index, $deployment := .}}
   <article class="media">
     <figure class="media-left">
-      <span class="lettrine">
+      <span class="lettrine" style="background-color: rgb({{$deployment.LogoColor}})">
         {{$deployment.Name|lettrine}}
       </span>
     </figure>
