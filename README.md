@@ -23,10 +23,10 @@ Dependencies:
 
 ### Runner
 
-Build the image used to process deployment
+See https://github.com/Xotelia/deployer-ansible
 
 ```bash
-$ docker build -t xotelia/deployer-ansible docker/
+$ docker pull xotelia/deployer-ansible
 ```
 
 ### Local
