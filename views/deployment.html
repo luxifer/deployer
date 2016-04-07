@@ -62,7 +62,7 @@
   var bottom = document.getElementById("bottom")
   var converter = new Filter({stream: true, newline: false});
   evtSource.onmessage = function(e) {
-    logs.innerHTML += converter.toHtml(e.data);
+    logs.innerHTML += converter.toHtml(escapeHTML(e.data));
     bottom.scrollIntoView();
   }
   {{else}}
@@ -72,7 +72,7 @@
       return response.text();
     })
     .then(function(text) {
-      logs.innerHTML = converter.toHtml(text);
+      logs.innerHTML = converter.toHtml(escapeHTML(text));
     });
   {{end}}
 </script>

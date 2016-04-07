@@ -395,3 +395,8 @@ Filter = (function() {
     return Filter;
 
 })();
+
+function escapeHTML(html) {
+    return document.createElement('div').appendChild(
+        document.createTextNode(html)).parentNode.innerHTML;
+}
