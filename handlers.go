@@ -189,7 +189,6 @@ func streamHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Param
 	}
 
 	reader, err := streamDeployment(deployment)
-	defer reader.Close()
 
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -198,6 +197,8 @@ func streamHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Param
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	defer reader.Close()
 
 	w.Header().Set("Content-Type", sse.ContentType)
 
