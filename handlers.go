@@ -207,11 +207,15 @@ func (w *StreamWriter) Write(data []byte) (int, error) {
 	var err = sse.Encode(w.writer, sse.Event{
 		Id:    strconv.Itoa(w.count),
 		Event: "message",
-		Data:  string(data),
+		Data:  sanitize(string(data)),
 	})
 	w.writer.(http.Flusher).Flush()
 	w.count += len(data)
 	return len(data), err
+}
+
+func sanitize(s string) string {
+	return strings.Replace(s, "\r", "", -1)
 }
 
 func renderTemplate(w http.ResponseWriter, name string, data interface{}) {
