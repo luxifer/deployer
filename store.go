@@ -4,6 +4,12 @@ import (
 	r "github.com/dancannon/gorethink"
 )
 
+func migrate() {
+	r.DBCreate("deployer").Run(rc)
+	r.TableCreate("deployment").Run(rc)
+	r.Table("deployment").IndexCreate("Started").Run(rc)
+}
+
 func updateDeployment(d *Deployment) {
 	res, err := r.Table("deployment").Get(d.ID).Run(rc)
 
@@ -43,7 +49,7 @@ func getDeployment(id string) (*Deployment, error) {
 }
 
 func listDeployment() ([]*Deployment, error) {
-	res, err := r.Table("deployment").OrderBy(r.OrderByOpts{Index: r.Desc("Started")}).Run(rc)
+	res, err := r.Table("deployment").OrderBy(r.OrderByOpts{Index: r.Desc("Started")}).Limit(25).Run(rc)
 
 	if err != nil {
 		return nil, err

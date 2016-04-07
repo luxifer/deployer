@@ -68,6 +68,7 @@ func main() {
 		Address:  rethinkHost,
 		Database: "deployer",
 	})
+	migrate()
 
 	mux := httprouter.New()
 	mux.POST("/event_handler", eventHandler)

@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"time"
-
-	"github.com/Xotelia/deployer/utils"
 )
 
 var (
@@ -95,7 +93,6 @@ func (d *Deployment) ShortSHA() string {
 	}
 }
 
-func (d *Deployment) LogoColor() string {
-	r, g, b := utils.HashStringToColor(fmt.Sprintf("%s/%s", d.Owner, d.Name))
-	return fmt.Sprintf("%d, %d, %d", r, g, b)
+func (d *Deployment) FullName() string {
+	return fmt.Sprintf("%s/%s", d.Owner, d.Name)
 }

@@ -14,14 +14,14 @@ body {
 }
 
 .lettrine {
-  font-size: 50px;
   color: white;
   display: inline-block;
-  width: 64px;
-  height: 64px;
-  line-height: 64px;
   text-align: center;
   font-weight: bold;
+  line-height: 35px;
+  height: 35px;
+  width: 35px;
+  font-size: 18px;
 }
 
 .is-warning {
@@ -35,4 +35,22 @@ body {
 }
 .is-info {
   color: #42afe3;
+}
+
+.deployment {
+  margin: 20px 0;
+}
+
+.meta {
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.tag.env {
+  color: white;
+  vertical-align: middle;
+}
+
+h4.title {
+  line-height: 32px;
 }

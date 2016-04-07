@@ -4,19 +4,22 @@ Deployments
 
 {{define "body"}}
 <div class="container">
+  <div class="media">
+    <h2 class="title">Deployments</h2>
+  </div>
   {{range $index, $deployment := .}}
-  <article class="media">
+  <article class="media deployment">
     <figure class="media-left">
-      <span class="lettrine" style="background-color: rgb({{$deployment.LogoColor}})">
+      <span class="lettrine" style="background-color: rgb({{$deployment.FullName|color}})">
         {{$deployment.Name|lettrine}}
       </span>
     </figure>
     <div class="media-content">
       <div class="content">
-        <h4>
-          <span class="icon is-{{$deployment.PanelColor}}"><i class="octicon {{$deployment.Icon}}"></i></span> {{$deployment.Status}} deploy on <span class="octicon octicon-git-branch"></span> <strong>{{$deployment.Ref}}</strong> <span class="octicon octicon-arrow-small-right"></span> <span class="tag is-info">{{$deployment.Env}}</span>
+        <h4 class="title">
+          <span class="icon is-medium is-{{$deployment.PanelColor}}"><i class="mega-octicon {{$deployment.Icon}}"></i></span> {{$deployment.Status|title}} deploy on <span class="octicon octicon-git-branch"></span> <strong>{{$deployment.Ref}}</strong> <span class="octicon octicon-arrow-small-right"></span> <span class="tag env" style="background-color: rgb({{$deployment.Env|color}})">{{$deployment.Env}}</span>
         </h4>
-        <p>
+        <p class="meta">
           <a href="{{$deployment.HTTPURL}}">{{$deployment.Owner}}/{{$deployment.Name}}</a> <span class="octicon octicon-squirrel"></span> <a href="/deployment/{{$deployment.ID}}">{{$deployment.JobID}}</a> <span class="octicon octicon-clock"></span> <span title="{{$deployment.Started}}">{{$deployment.Started|ago}}</span>
         </p>
       </div>

@@ -15,6 +15,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Xotelia/deployer/utils"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/dustin/go-humanize"
 	"github.com/google/go-github/github"
@@ -40,6 +42,11 @@ func init() {
 			} else {
 				return humanize.Time(date)
 			}
+		},
+		"title": strings.Title,
+		"color": func(word string) string {
+			r, g, b := utils.HashStringToColor(word)
+			return fmt.Sprintf("%d, %d, %d", r, g, b)
 		},
 	}
 
