@@ -15,7 +15,12 @@
 
   <nav class="panel">
     <p class="panel-heading">
-      <a href="{{.HTTPURL}}">{{.Owner}}/{{.Name}}</a> <span class="octicon octicon-arrow-small-right"></span> <span class="tag is-info">{{.Env}}</span>
+      <span class="lettrine" style="background-color: rgb({{.FullName|color}})">
+        {{.Name|lettrine}}
+      </span>
+      <a href="{{.HTTPURL}}">{{.Owner}}/{{.Name}}</a>
+      <span class="octicon octicon-arrow-small-right"></span>
+      <span class="tag env" style="background-color: rgb({{.Env|color}})">{{.Env}}</span>
     </p>
     <div class="panel-block">
       <div class="message is-{{.PanelColor}}">
