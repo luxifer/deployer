@@ -165,6 +165,7 @@ func launchDeployment(d *Deployment) error {
 			fmt.Sprintf("DEPLOYER_TASK=%s", d.Task),
 			fmt.Sprintf("DEPLOYER_ENV=%s", d.Env),
 			fmt.Sprintf("DEPLOYER_REF=%s", d.Ref),
+			fmt.Sprintf("DEPLOYER_SHA=%s", d.SHA),
 		},
 	}
 	hostConfig := container.HostConfig{
