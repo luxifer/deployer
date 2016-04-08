@@ -33,6 +33,13 @@ type Deployment struct {
 	ExitCode int
 	Status   string
 	Logs     []byte
+	User     User
+}
+
+type User struct {
+	Login     string
+	AvatarURL string
+	HTTPURL   string
 }
 
 func (e ExitError) Error() string {

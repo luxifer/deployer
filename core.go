@@ -67,6 +67,11 @@ func processDeploy(payload *github.DeploymentEvent) {
 		Author:  *payload.Sender.Login,
 		Started: time.Now(),
 		Status:  statusPending,
+		User: User{
+			Login:     *payload.Sender.Login,
+			AvatarURL: *payload.Sender.AvatarURL,
+			HTTPURL:   *payload.Sender.HTMLURL,
+		},
 	}
 
 	updateDeployment(&deployment)
