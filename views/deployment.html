@@ -37,11 +37,11 @@
       <nav class="navbar">
         <div class="navbar-item is-text-centered">
           <p class="heading">Started</p>
-          <p class="title" title="{{.Started}}">{{.Started|ago}}</p>
+          <p class="title" title="{{.Started.Format "Mon, 02 Jan 2006 15:04:05 MST"}}">{{.Started|ago}}</p>
         </div>
         <div class="navbar-item is-text-centered">
           <p class="heading">Finished</p>
-          <p class="title" title="{{.Finished}}">{{.Finished|ago}}</p>
+          <p class="title" title="{{.Finished.Format "Mon, 02 Jan 2006 15:04:05 MST"}}">{{.Finished|ago}}</p>
         </div>
         <div class="navbar-item is-text-centered">
           <p class="heading">Duration</p>
