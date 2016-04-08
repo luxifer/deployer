@@ -20,7 +20,7 @@ Deployments
           <span class="icon is-medium is-{{$deployment.PanelColor}}"><i class="mega-octicon {{$deployment.Icon}}"></i></span> {{$deployment.Status|title}} deploy on <span class="octicon octicon-git-branch"></span> <strong>{{$deployment.Ref}}</strong> <span class="octicon octicon-arrow-small-right"></span> <span class="tag env" style="background-color: rgb({{$deployment.Env|color}})">{{$deployment.Env}}</span>
         </h4>
         <p class="meta">
-          <a href="{{$deployment.HTTPURL}}">{{$deployment.Owner}}/{{$deployment.Name}}</a> <span class="octicon octicon-squirrel"></span> <a href="/deployment/{{$deployment.ID}}">{{$deployment.JobID}}</a> <span class="octicon octicon-clock"></span> <span title="{{$deployment.Started.Format "Mon, 02 Jan 2006 15:04:05 MST"}}">{{$deployment.Started|ago}}</span>
+          <a href="{{$deployment.HTTPURL}}">{{$deployment.Owner}}/{{$deployment.Name}}</a> <span class="octicon octicon-squirrel"></span> <a href="/deployment/{{$deployment.ID}}">{{$deployment.JobID}}</a> <span class="octicon octicon-clock"></span> <time title="{{$deployment.Started.Format "Mon, 02 Jan 2006 15:04:05 MST"}}" datetime="{{$deployment.Started.Format "2006-01-02T15:04:05Z07:00"}}">{{$deployment.Started|ago}}</time>
         </p>
       </div>
     </div>
