@@ -3,63 +3,90 @@
 {{end}}
 
 {{define "body"}}
-<div class="container">
+<div class="ui container">
 
-  <nav class="navbar">
-    <div class="navbar-left">
-      <div class="navbar-item">
-        <a href="/deployment" class="button is-outlined">Back to list</a>
-      </div>
-    </div>
-  </nav>
+  <div>
+    <a href="/deployment" class="ui teal basic button">Back to list</a>
+  </div>
 
-  <nav class="panel">
-    <p class="panel-heading">
+  <div class="ui tall stacked segment">
+    <div class="ui top attached label">
       <span class="lettrine" style="background-color: rgb({{.FullName|color}})">
         {{.Name|lettrine}}
       </span>
       <a href="{{.HTTPURL}}">{{.Owner}}/{{.Name}}</a>
       <span class="octicon octicon-arrow-small-right"></span>
-      <span class="tag env" style="background-color: rgb({{.Env|color}})">{{.Env}}</span>
-    </p>
-    <div class="panel-block">
-      <div class="message is-{{.PanelColor}}">
-        <div class="message-header">
-          {{.Status}}
+      <span class="ui label env" style="background-color: rgb({{.Env|color}})">{{.Env}}</span>
+    </div>
+    <div class="ui {{.PanelColor}} segment">
+      <p>
+        <i class="icon {{.Icon}}"></i> Deploy <strong>{{.Status}}</strong> on <span class="octicon octicon-git-branch"></span> {{.Ref}}
+        {{if eq .Status "pending"}}
+          <a class="mini ui right floated button negative" href="/deployment/{{.ID}}/cancel">Cancel</a>
+        {{end}}
+      </p>
+    </div>
+    <div class="ui four tiny statistics">
+      <div class="statistic">
+        <div class="value">
+          <time title="{{.Started.Format "Mon, 02 Jan 2006 15:04:05 MST"}}" datetime="{{.Started.Format "2006-01-02T15:04:05Z07:00"}}">{{.Started|ago}}</time>
         </div>
-        <div class="message-body">
-          <i class="octicon {{.Icon}}"></i> Deploy <strong>{{.Status}}</strong> on <span class="octicon octicon-git-branch"></span> {{.Ref}}
-          {{if eq .Status "pending"}}
-            <a class="button is-small is-danger is-pulled-right" href="/deployment/{{.ID}}/cancel">Cancel</a>
-          {{end}}
+        <div class="label">
+          Started
         </div>
       </div>
-      <nav class="navbar">
-        <div class="navbar-item is-text-centered">
-          <p class="heading">Started</p>
-          <p class="title">
-            <time title="{{.Started.Format "Mon, 02 Jan 2006 15:04:05 MST"}}" datetime="{{.Started.Format "2006-01-02T15:04:05Z07:00"}}">{{.Started|ago}}</time>
-          </p>
+      <div class="statistic">
+        <div class="value">
+          <time title="{{.Finished.Format "Mon, 02 Jan 2006 15:04:05 MST"}}" datetime="{{.Finished.Format "2006-01-02T15:04:05Z07:00"}}">{{.Finished|ago}}</time>
         </div>
-        <div class="navbar-item is-text-centered">
-          <p class="heading">Finished</p>
-          <p class="title">
-            <time title="{{.Finished.Format "Mon, 02 Jan 2006 15:04:05 MST"}}" datetime="{{.Finished.Format "2006-01-02T15:04:05Z07:00"}}">{{.Finished|ago}}</time>
-          </p>
+        <div class="label">
+          Finished
         </div>
-        <div class="navbar-item is-text-centered">
-          <p class="heading">Duration</p>
-          <p class="title">{{.Duration}}</p>
+      </div>
+      <div class="statistic">
+        <div class="value">
+          {{.Duration}}
         </div>
-        <div class="navbar-item is-text-centered">
-          <p class="heading">SHA</p>
-          <p class="title"><a href="{{.HTTPURL}}/commit/{{.SHA}}">{{.ShortSHA}}</a></p>
+        <div class="label">
+          Duration
         </div>
-      </nav>
-      <div class="console" id="logs"></div>
-      <div id="bottom"></div>
+      </div>
+      <div class="statistic">
+        <div class="value">
+          <a href="{{.HTTPURL}}/commit/{{.SHA}}">{{.ShortSHA}}</a>
+        </div>
+        <div class="label">
+          SHA
+        </div>
+      </div>
     </div>
-  </nav>
+    <div class="console ui inverted segment" id="logs"></div>
+    <div id="bottom"></div>
+    {{if .Commits}}
+    <h4 class="ui dividing header">Commits</h4>
+    <div class="ui stacked segments">
+      {{range $index, $commit := .Commits}}
+      <div class="ui segment">
+        <a class="ui image label" href="{{$commit.Author.HTTPURL}}">
+          <img src="{{$commit.Author.AvatarURL}}">
+          {{$commit.Author.Login}}
+        </a>
+        <strong><a href="{{$commit.HTTPURL}}">{{$commit.ShortSHA}}</a></strong> {{$commit.Message}}
+      </div>
+      {{end}}
+    </div>
+    {{end}}
+    {{if .Files}}
+    <h4 class="ui dividing header">Files</h4>
+    <div class="ui grid">
+      {{range $index, $file := .Files}}
+      <div class="four wide column filename">
+        <span title="{{$file.Filename}}"><i class="{{$file.Icon}} icon"></i> {{$file.Filename}}</span>
+      </div>
+      {{end}}
+    </div>
+    {{end}}
+  </div>
 
 </div>
 

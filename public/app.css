@@ -5,11 +5,9 @@ body {
 }
 
 .console {
-  background-color: rgb(36, 41, 50);
   color: rgb(250, 250, 250);
   white-space: pre;
   font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
-  padding: 10px;
   overflow-x: auto;
 }
 
@@ -24,44 +22,17 @@ body {
   font-size: 18px;
 }
 
-.avatar {
-  width: 35px;
-  height: 35px;
-  display: inline-block;
-}
-
-.avatar img {
-  height: auto;
-  vertical-align: middle;
-}
-
-.is-warning {
-  color: #fce473;
-}
-.is-success {
-  color: #97cd76;
-}
-.is-danger {
-  color: #ed6c63;
-}
-.is-info {
-  color: #42afe3;
-}
-
-.deployment {
-  margin: 20px 0;
-}
-
-.meta {
-  text-transform: uppercase;
-  font-size: 11px;
-}
-
-.tag.env {
+.label.env {
   color: white;
   vertical-align: middle;
 }
 
-h4.title {
-  line-height: 32px;
+.ui.top.attached.label:first-child + :not(.attached) {
+    margin-top: 4rem !important;
+}
+
+.filename {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

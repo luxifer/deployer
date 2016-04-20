@@ -74,18 +74,26 @@ func processDeploy(payload *github.DeploymentEvent) {
 		},
 	}
 
+	lastDeploy, err := lastDeployment(deployment.Owner, deployment.Name)
+
+	if err != nil {
+		log.Error(err)
+	} else {
+		computeChanges(&deployment, lastDeploy)
+	}
+
 	updateDeployment(&deployment)
 
 	log.Printf("Deploy #%d started at %s", deployment.JobID, deployment.Started.Format(time.UnixDate))
 
 	createDeploymentStatus(&deployment, githubStatusPending)
 	notifyDeploymentStatus(&deployment, githubStatusPending, hipchat.ColorYellow)
-	err := launchDeployment(&deployment)
+	err = launchDeployment(&deployment)
 
 	log.Printf("Deploy #%d finished at %s", deployment.JobID, deployment.Finished.Format(time.UnixDate))
 
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 		deployment.Status = statusError
 		createDeploymentStatus(&deployment, githubStatusError)
 		notifyDeploymentStatus(&deployment, githubStatusError, hipchat.ColorRed)
@@ -98,6 +106,46 @@ func processDeploy(payload *github.DeploymentEvent) {
 	updateDeployment(&deployment)
 
 	log.Printf("Deploy #%d last %s", deployment.JobID, deployment.Finished.Sub(deployment.Started))
+}
+
+func computeChanges(currentDeploy, lastDeploy *Deployment) {
+	head := currentDeploy.SHA
+	base := lastDeploy.SHA
+
+	comparison, _, err := gc.Repositories.CompareCommits(currentDeploy.Owner, currentDeploy.Name, base, head)
+
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	var commits []Commit
+
+	for _, commit := range comparison.Commits {
+		commits = append(commits, Commit{
+			SHA:     *commit.SHA,
+			HTTPURL: *commit.HTMLURL,
+			Message: *commit.Commit.Message,
+			Author: User{
+				Login:     *commit.Author.Login,
+				AvatarURL: *commit.Author.AvatarURL,
+				HTTPURL:   *commit.Author.HTMLURL,
+			},
+		})
+	}
+
+	currentDeploy.Commits = commits
+
+	var files []File
+
+	for _, file := range comparison.Files {
+		files = append(files, File{
+			Filename: *file.Filename,
+			Status:   *file.Status,
+		})
+	}
+
+	currentDeploy.Files = files
 }
 
 func createDeploymentStatus(d *Deployment, state string) {

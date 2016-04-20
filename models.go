@@ -34,12 +34,26 @@ type Deployment struct {
 	Status   string
 	Logs     []byte
 	User     User
+	Commits  []Commit
+	Files    []File
 }
 
 type User struct {
 	Login     string
 	AvatarURL string
 	HTTPURL   string
+}
+
+type Commit struct {
+	SHA     string
+	HTTPURL string
+	Message string
+	Author  User
+}
+
+type File struct {
+	Filename string
+	Status   string
 }
 
 func (e ExitError) Error() string {
@@ -51,13 +65,13 @@ func (d *Deployment) PanelColor() string {
 
 	switch d.Status {
 	case statusPending:
-		color = "warning"
+		color = "yellow"
 	case statusSuccess:
-		color = "success"
+		color = "green"
 	case statusError:
-		color = "danger"
+		color = "red"
 	default:
-		color = "info"
+		color = "teal"
 	}
 
 	return color
@@ -68,13 +82,28 @@ func (d *Deployment) Icon() string {
 
 	switch d.Status {
 	case statusPending:
-		icon = "octicon-sync"
+		icon = "refresh"
 	case statusSuccess:
-		icon = "octicon-check"
+		icon = "checkmark"
 	case statusError:
-		icon = "octicon-x"
+		icon = "remove"
 	default:
-		icon = "octicon-question"
+		icon = "help"
+	}
+
+	return icon
+}
+
+func (f File) Icon() string {
+	var icon string
+
+	switch f.Status {
+	case "added":
+		icon = "plus square outline green"
+	case "modified":
+		icon = "write yellow"
+	case "removed":
+		icon = "minus square outline red"
 	}
 
 	return icon
@@ -98,6 +127,10 @@ func (d *Deployment) ShortSHA() string {
 	} else {
 		return d.SHA
 	}
+}
+
+func (c Commit) ShortSHA() string {
+	return c.SHA[:7]
 }
 
 func (d *Deployment) FullName() string {

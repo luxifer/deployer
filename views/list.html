@@ -3,35 +3,37 @@ Deployments
 {{end}}
 
 {{define "body"}}
-<div class="container">
-  <div class="media">
-    <h2 class="title">Deployments</h2>
-  </div>
-  {{range $index, $deployment := .}}
-  <article class="media deployment">
-    <figure class="media-left">
-      <span class="lettrine" style="background-color: rgb({{$deployment.FullName|color}})">
-        {{$deployment.Name|lettrine}}
-      </span>
-    </figure>
-    <div class="media-content">
+<div class="ui container">
+
+  <h2 class="ui dividing header">Deployments</h2>
+  <div class="ui items">
+    {{range $index, $deployment := .}}
+    <div class="item">
+      <div class="ui mini image">
+        <span class="lettrine" style="background-color: rgb({{$deployment.FullName|color}})">
+          {{$deployment.Name|lettrine}}
+        </span>
+      </div>
       <div class="content">
-        <h4 class="title">
-          <span class="icon is-medium is-{{$deployment.PanelColor}}"><i class="mega-octicon {{$deployment.Icon}}"></i></span>
-          {{$deployment.Status|title}} deploy on <span class="octicon octicon-git-branch"></span> <strong>{{$deployment.Ref}}</strong>
+        <div class="header">
+          <i class="{{$deployment.PanelColor}} {{$deployment.Icon}} icon"></i> <strong>{{$deployment.Ref}}</strong>
           <span class="octicon octicon-arrow-small-right"></span>
-          <span class="tag env" style="background-color: rgb({{$deployment.Env|color}})">{{$deployment.Env}}</span>
+          <span class="ui label env" style="background-color: rgb({{$deployment.Env|color}})">{{$deployment.Env}}</span>
           {{if $deployment.User.Login}}
-            by <span class="avatar"><img src="{{$deployment.User.AvatarURL}}" height="60px" width="60px"></span>
-            <a href="{{$deployment.User.HTTPURL}}">{{$deployment.User.Login}}</a>
+            by <a class="ui image label" href="{{$deployment.User.HTTPURL}}">
+              <img src="{{$deployment.User.AvatarURL}}">
+              {{$deployment.User.Login}}
+            </a>
           {{end}}
-        </h4>
-        <p class="meta">
-          <a href="{{$deployment.HTTPURL}}">{{$deployment.Owner}}/{{$deployment.Name}}</a> <span class="octicon octicon-squirrel"></span> <a href="/deployment/{{$deployment.ID}}">{{$deployment.JobID}}</a> <span class="octicon octicon-clock"></span> <time title="{{$deployment.Started.Format "Mon, 02 Jan 2006 15:04:05 MST"}}" datetime="{{$deployment.Started.Format "2006-01-02T15:04:05Z07:00"}}">{{$deployment.Started|ago}}</time>
-        </p>
+        </div>
+        <div class="meta">
+          <a href="{{$deployment.HTTPURL}}">{{$deployment.Owner}}/{{$deployment.Name}}</a> <span class="octicon octicon-squirrel"></span> <a href="/deployment/{{$deployment.ID}}">{{$deployment.JobID}}</a>
+          <span class="octicon octicon-clock"></span>
+          <time title="{{$deployment.Started.Format "Mon, 02 Jan 2006 15:04:05 MST"}}" datetime="{{$deployment.Started.Format "2006-01-02T15:04:05Z07:00"}}">{{$deployment.Started|ago}}</time>
+        </div>
       </div>
     </div>
-  </article>
-  {{end}}
+    {{end}}
+  </div>
 </div>
 {{end}}

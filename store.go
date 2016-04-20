@@ -67,3 +67,25 @@ func listDeployment() ([]*Deployment, error) {
 
 	return deployments, nil
 }
+
+func lastDeployment(owner string, name string) (*Deployment, error) {
+	res, err := r.Table("deployment").OrderBy(r.OrderByOpts{Index: r.Desc("Started")}).Filter(map[string]interface{}{
+		"Owner": owner,
+		"Name":  name,
+	}).Limit(1).Run(rc)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Close()
+
+	var deployment Deployment
+	err = res.One(&deployment)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &deployment, nil
+}
