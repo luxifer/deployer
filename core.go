@@ -182,13 +182,12 @@ func streamDeployment(d *Deployment) (io.ReadCloser, error) {
 	name := fmt.Sprintf("deployer_%d", d.JobID)
 
 	logOpts := types.ContainerLogsOptions{
-		ContainerID: name,
-		ShowStdout:  true,
-		ShowStderr:  true,
-		Follow:      true,
+		ShowStdout: true,
+		ShowStderr: true,
+		Follow:     true,
 	}
 
-	return dc.ContainerLogs(ctx, logOpts)
+	return dc.ContainerLogs(ctx, name, logOpts)
 }
 
 func cancelDeployment(d *Deployment) error {
@@ -202,7 +201,7 @@ func launchDeployment(d *Deployment) error {
 	ctx := context.Background()
 	name := fmt.Sprintf("deployer_%d", d.JobID)
 
-	_, err := dc.ImagePull(ctx, types.ImagePullOptions{ImageID: defaultImage}, nil)
+	_, err := dc.ImagePull(ctx, defaultImage, types.ImagePullOptions{})
 
 	if err != nil {
 		return err
@@ -230,12 +229,11 @@ func launchDeployment(d *Deployment) error {
 		d.Finished = time.Now()
 		dc.ContainerKill(ctx, c.ID, "9")
 		removeOptions := types.ContainerRemoveOptions{
-			ContainerID:   c.ID,
 			RemoveLinks:   true,
 			RemoveVolumes: true,
 			Force:         false,
 		}
-		dc.ContainerRemove(ctx, removeOptions)
+		dc.ContainerRemove(ctx, c.ID, removeOptions)
 	}()
 
 	if err != nil {
@@ -257,13 +255,11 @@ func launchDeployment(d *Deployment) error {
 	d.ExitCode = exitCode
 
 	logOpts := types.ContainerLogsOptions{
-		ContainerID: c.ID,
-		ShowStdout:  true,
-		ShowStderr:  true,
-		Follow:      true,
+		ShowStdout: true,
+		ShowStderr: true,
 	}
 
-	reader, err := dc.ContainerLogs(ctx, logOpts)
+	reader, err := dc.ContainerLogs(ctx, c.ID, logOpts)
 
 	if err != nil {
 		return err
