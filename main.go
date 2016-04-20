@@ -7,12 +7,12 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/andybons/hipchat"
-	r "github.com/dancannon/gorethink"
 	"github.com/docker/engine-api/client"
 	"github.com/google/go-github/github"
 	"github.com/gorilla/handlers"
 	"github.com/julienschmidt/httprouter"
 	"golang.org/x/oauth2"
+	r "gopkg.in/dancannon/gorethink.v1"
 )
 
 var (

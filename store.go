@@ -1,7 +1,7 @@
 package main
 
 import (
-	r "github.com/dancannon/gorethink"
+	r "gopkg.in/dancannon/gorethink.v1"
 )
 
 func migrate() {
