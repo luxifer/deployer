@@ -158,7 +158,7 @@ func createDeploymentStatus(d *Deployment, state string) {
 }
 
 func notifyDeploymentStatus(d *Deployment, state string, color string) {
-	message := fmt.Sprintf("%s: deployment <a href=\"%s\">#%d</a> of <a href=\"%s\">%s/%s</a> (%s) → %s (awesome)",
+	message := fmt.Sprintf("%s: deployment <a href=\"%s\">#%d</a> of <a href=\"%s\">%s/%s</a> (%s) → %s",
 		strings.Title(state),
 		fmt.Sprintf("%s/deployment/%s", host, d.ID),
 		d.JobID,
