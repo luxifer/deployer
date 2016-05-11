@@ -158,14 +158,15 @@ func createDeploymentStatus(d *Deployment, state string) {
 }
 
 func notifyDeploymentStatus(d *Deployment, state string, color string) {
-	message := fmt.Sprintf("%s: deployment <a href=\"%s\">#%d</a> in <a href=\"%s\">%s/%s</a> (%s)",
+	message := fmt.Sprintf("%s: deployment <a href=\"%s\">#%d</a> of <a href=\"%s\">%s/%s</a> (%s) → %s (awesome)",
 		strings.Title(state),
 		fmt.Sprintf("%s/deployment/%s", host, d.ID),
 		d.JobID,
 		d.HTTPURL,
 		d.Owner,
 		d.Name,
-		d.Ref)
+		d.Ref,
+		d.Env)
 	req := hipchat.MessageRequest{
 		RoomId:        room,
 		From:          "Deployer",
