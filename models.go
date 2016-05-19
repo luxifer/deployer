@@ -104,6 +104,8 @@ func (f File) Icon() string {
 		icon = "write yellow"
 	case "removed":
 		icon = "minus square outline red"
+	case "renamed":
+		icon = "edit orange"
 	}
 
 	return icon
