@@ -241,7 +241,7 @@ func launchDeployment(d *Deployment) error {
 		return err
 	}
 
-	err = dc.ContainerStart(ctx, c.ID)
+	err = dc.ContainerStart(ctx, c.ID, "")
 
 	if err != nil {
 		return err
