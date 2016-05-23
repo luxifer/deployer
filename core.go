@@ -27,7 +27,7 @@ var (
 	githubStatusSuccess = "success"
 	githubStatusError   = "failure"
 
-	defaultImage = "xotelia/deployer-ansible"
+	defaultImage = "xotelia/deployer-ansible:2.0.2.0"
 )
 
 func init() {
