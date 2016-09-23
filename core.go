@@ -11,9 +11,9 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/andybons/hipchat"
-	"github.com/docker/engine-api/types"
-	"github.com/docker/engine-api/types/container"
-	"github.com/docker/engine-api/types/network"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/network"
 	"github.com/google/go-github/github"
 	"golang.org/x/net/context"
 )
@@ -27,7 +27,8 @@ var (
 	githubStatusSuccess = "success"
 	githubStatusError   = "failure"
 
-	defaultImage = "xotelia/deployer-ansible:2.1.1.0"
+	defaultImage   = "xotelia/deployer-ansible:2.1.1.0"
+	defaultTimeout = 5 * time.Second
 )
 
 func init() {
@@ -191,11 +192,34 @@ func streamDeployment(d *Deployment) (io.ReadCloser, error) {
 	return dc.ContainerLogs(ctx, name, logOpts)
 }
 
-func cancelDeployment(d *Deployment) error {
+func stopAndRemoveContainer(name string) error {
 	ctx := context.Background()
+
+	if err := dc.ContainerStop(ctx, name, &defaultTimeout); err != nil {
+		return err
+	}
+
+	if err := dc.ContainerKill(ctx, name, "9"); err != nil {
+		return err
+	}
+
+	removeOptions := types.ContainerRemoveOptions{
+		RemoveLinks:   true,
+		RemoveVolumes: true,
+		Force:         false,
+	}
+
+	if err := dc.ContainerRemove(ctx, name, removeOptions); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func cancelDeployment(d *Deployment) error {
 	name := fmt.Sprintf("deployer_%d", d.JobID)
 
-	return dc.ContainerStop(ctx, name, 0)
+	return stopAndRemoveContainer(name)
 }
 
 func launchDeployment(d *Deployment) error {
@@ -226,22 +250,20 @@ func launchDeployment(d *Deployment) error {
 	}
 	c, err := dc.ContainerCreate(ctx, &config, &hostConfig, &network.NetworkingConfig{}, name)
 
+	for _, warn := range c.Warnings {
+		log.Warn(warn)
+	}
+
 	defer func() {
 		d.Finished = time.Now()
-		dc.ContainerKill(ctx, c.ID, "9")
-		removeOptions := types.ContainerRemoveOptions{
-			RemoveLinks:   true,
-			RemoveVolumes: true,
-			Force:         false,
-		}
-		dc.ContainerRemove(ctx, c.ID, removeOptions)
+		stopAndRemoveContainer(c.ID)
 	}()
 
 	if err != nil {
 		return err
 	}
 
-	err = dc.ContainerStart(ctx, c.ID, "")
+	err = dc.ContainerStart(ctx, c.ID, types.ContainerStartOptions{})
 
 	if err != nil {
 		return err
