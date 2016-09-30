@@ -7,7 +7,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/andybons/hipchat"
-	"github.com/docker/docker/client"
+	"github.com/docker/engine-api/client"
 	"github.com/google/go-github/github"
 	"github.com/gorilla/handlers"
 	"github.com/julienschmidt/httprouter"
