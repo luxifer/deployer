@@ -27,7 +27,7 @@ var (
 	githubStatusSuccess = "success"
 	githubStatusError   = "failure"
 
-	defaultImage   = "xotelia/deployer-ansible:2.1.2.0"
+	defaultImage   = "xotelia/deployer-ansible"
 	defaultTimeout = 5 * time.Second
 )
 
