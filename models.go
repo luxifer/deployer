@@ -82,13 +82,13 @@ func (d *Deployment) Icon() string {
 
 	switch d.Status {
 	case statusPending:
-		icon = "refresh"
+		icon = "refresh yellow"
 	case statusSuccess:
-		icon = "checkmark"
+		icon = "check circle green"
 	case statusError:
-		icon = "remove"
+		icon = "remove circle red"
 	default:
-		icon = "help"
+		icon = "help circle teal"
 	}
 
 	return icon
