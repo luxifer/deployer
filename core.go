@@ -199,10 +199,6 @@ func stopAndRemoveContainer(name string) error {
 		return err
 	}
 
-	if err := dc.ContainerKill(ctx, name, "9"); err != nil {
-		return err
-	}
-
 	removeOptions := types.ContainerRemoveOptions{
 		RemoveLinks:   true,
 		RemoveVolumes: true,
