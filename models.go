@@ -12,7 +12,7 @@ var (
 )
 
 type ExitError struct {
-	ExitCode int
+	ExitCode int64
 	ID       int
 }
 
@@ -30,7 +30,7 @@ type Deployment struct {
 	Author   string
 	Started  time.Time
 	Finished time.Time
-	ExitCode int
+	ExitCode int64
 	Status   string
 	Logs     []byte
 	User     User
