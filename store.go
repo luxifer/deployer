@@ -4,6 +4,8 @@ import (
 	r "gopkg.in/dancannon/gorethink.v1"
 )
 
+var listLimit = 25
+
 func migrate() {
 	r.DBCreate("deployer").Run(rc)
 	r.TableCreate("deployment").Run(rc)
@@ -48,8 +50,23 @@ func getDeployment(id string) (*Deployment, error) {
 	return &deployment, nil
 }
 
-func listDeployment() ([]*Deployment, error) {
-	res, err := r.Table("deployment").OrderBy(r.OrderByOpts{Index: r.Desc("Started")}).Limit(25).Run(rc)
+func countDeployments() (int, error) {
+	res, err := r.Table("deployment").Count().Run(rc)
+
+	if err != nil {
+		return 0, err
+	}
+
+	var total int
+	res.One(&total)
+
+	return total, nil
+}
+
+func listDeployment(page int) ([]*Deployment, error) {
+	startOffset := (page - 1) * listLimit
+	endOffset := startOffset + listLimit + 1
+	res, err := r.Table("deployment").OrderBy(r.OrderByOpts{Index: r.Desc("Started")}).Slice(startOffset, endOffset).Run(rc)
 
 	if err != nil {
 		return nil, err

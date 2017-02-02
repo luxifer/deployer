@@ -6,33 +6,40 @@ Deployments
 <div class="ui container">
 
   <h2 class="ui dividing header">Deployments</h2>
-  <div class="ui items">
-    {{range $index, $deployment := .}}
-    <div class="item">
-      <div class="ui mini image">
-        <span class="lettrine" style="background-color: rgb({{$deployment.FullName|color}})">
-          {{$deployment.Name|lettrine}}
-        </span>
-      </div>
-      <div class="content">
-        <div class="header">
-          <i class="{{$deployment.PanelColor}} {{$deployment.Icon}} icon"></i> <strong>{{$deployment.Ref}}</strong>
-          <span class="octicon octicon-arrow-small-right"></span>
-          <span class="ui label env" style="background-color: rgb({{$deployment.Env|color}})">{{$deployment.Env}}</span>
-          {{if $deployment.User.Login}}
-            by <a class="ui image label" href="{{$deployment.User.HTTPURL}}">
-              <img src="{{$deployment.User.AvatarURL}}">
-              {{$deployment.User.Login}}
-            </a>
-          {{end}}
+  {{range $index, $deployment := .Deployments}}
+    <div class="ui segment">
+      <div class="ui grid">
+        <div class="one wide column">
+          <a href="{{$deployment.User.HTTPURL}}">
+            <img class="ui middle aligned mini image" src="{{$deployment.User.AvatarURL}}">
+          </a>
         </div>
-        <div class="meta">
-          <a href="{{$deployment.HTTPURL}}">{{$deployment.Owner}}/{{$deployment.Name}}</a> <span class="octicon octicon-squirrel"></span> <a href="/deployment/{{$deployment.ID}}">{{$deployment.JobID}}</a>
-          <span class="octicon octicon-clock"></span>
-          <time title="{{$deployment.Started.Format "Mon, 02 Jan 2006 15:04:05 MST"}}" datetime="{{$deployment.Started.Format "2006-01-02T15:04:05Z07:00"}}">{{$deployment.Started|ago}}</time>
+        <div class="fifteen wide column">
+          <a href="/deployment/{{$deployment.ID}}">
+            <div class="ui large label" style="background-color: rgb({{$deployment.FullName|color}}); color: white">
+              {{$deployment.Owner}}/{{$deployment.Name}}
+            </div> <i class="long arrow right icon"></i>
+            <strong>
+              <span style="color: rgb({{$deployment.Env|color}})"><i class="small circle thin icon"></i> {{$deployment.Env}}</span>
+            </strong>
+          </a>
+          <div class="ui divider"></div>
+          <p class="ui grey">
+            <a href="{{$deployment.HTTPURL}}">{{$deployment.Owner}}/{{$deployment.Name}}</a>
+            <i class="cloud upload icon"></i> {{$deployment.JobID}}
+            <i class="history icon"></i>
+            <time title="{{$deployment.Started.Format "Mon, 02 Jan 2006 15:04:05 MST"}}" datetime="{{$deployment.Started.Format "2006-01-02T15:04:05Z07:00"}}">{{$deployment.Started|ago}}</time>
+          </p>
         </div>
       </div>
     </div>
+  {{end}}
+  <div class="ui pagination menu">
+    {{ $current := .Current }}
+    {{range $loop := .Total}}
+    <a class="{{if eq $loop $current}}active{{end}} item" href="/deployment?page={{$loop}}">
+      {{$loop}}
+    </a>
     {{end}}
   </div>
 </div>

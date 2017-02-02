@@ -4,11 +4,11 @@ Small server that listens to github deployment event and trigger related ansible
 
 ## Configuration
 
-* `DEPLOYER_HIPCHAT_TOKEN` _(required)_: Hipchat API token
-* `DEPLOYER_HIPCHAT_ROOM` _(required)_: Hipchat room to notify deployment
-* `DEPLOYER_RETHINK_HOST` _(required)_: RethinkDB (`<host>:<port>`)
-* `DEPLOYER_HOST` _(required)_: Host (`https?://<domain>`)
-* `DEPLOYER_SSHKEY_PATH` _(required)_: SSH key path allowed to clone the repository and access the target deployment hosts
+* `DEPLOYER_HIPCHAT_TOKEN` **(required)**: Hipchat API token
+* `DEPLOYER_HIPCHAT_ROOM` **(required)**: Hipchat room to notify deployment
+* `DEPLOYER_RETHINK_HOST` **(required)**: RethinkDB (`<host>:<port>`)
+* `DEPLOYER_HOST` **(required)**: Host (`https?://<domain>`)
+* `DEPLOYER_SSHKEY_PATH` **(required)**: SSH key path allowed to clone the repository and access the target deployment hosts
 * `DEPLOYER_GITHUB_TOKEN` _(optional)_: Github API token (required for private repos)
 * `DEPLOYER_DOCKER_HOST` _(optional)_: Docker host (default to: unix:///var/run/docker.sock)
 * `DEPLOYER_BIND` _(optional)_: IP to bind to (default: 0.0.0.0)

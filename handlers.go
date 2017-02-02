@@ -9,6 +9,7 @@ import (
 	"html/template"
 	"io"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -78,7 +79,23 @@ func eventHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 }
 
 func listHandler(w http.ResponseWriter, req *http.Request, _ httprouter.Params) {
-	deployments, err := listDeployment()
+	rawPage := req.URL.Query().Get("page")
+	total, _ := countDeployments()
+	log.Info(total)
+	count := math.Ceil(float64(total) / float64(listLimit))
+	log.Info(count)
+	pages := make([]int, int(count))
+
+	for i := 0; i < int(count); i++ {
+		pages[i] = i + 1
+	}
+
+	if rawPage == "" {
+		rawPage = "1"
+	}
+
+	page, _ := strconv.Atoi(rawPage)
+	deployments, err := listDeployment(page)
 
 	if err != nil {
 		log.Error(err)
@@ -86,7 +103,15 @@ func listHandler(w http.ResponseWriter, req *http.Request, _ httprouter.Params) 
 		return
 	}
 
-	renderTemplate(w, "list", deployments)
+	renderTemplate(w, "list", struct {
+		Deployments []*Deployment
+		Current     int
+		Total       []int
+	}{
+		Deployments: deployments,
+		Current:     page,
+		Total:       pages,
+	})
 }
 
 func deploymentHandler(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
