@@ -70,8 +70,9 @@ func listDeployment() ([]*Deployment, error) {
 
 func lastDeployment(owner string, name string) (*Deployment, error) {
 	res, err := r.Table("deployment").OrderBy(r.OrderByOpts{Index: r.Desc("Started")}).Filter(map[string]interface{}{
-		"Owner": owner,
-		"Name":  name,
+		"Owner":  owner,
+		"Name":   name,
+		"Status": "success",
 	}).Limit(1).Run(rc)
 
 	if err != nil {
