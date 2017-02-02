@@ -12,8 +12,8 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/andybons/hipchat"
 	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/types/container"
-	"github.com/docker/docker/types/network"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/network"
 	"github.com/google/go-github/github"
 	"golang.org/x/net/context"
 )
