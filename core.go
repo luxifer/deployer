@@ -27,7 +27,7 @@ var (
 	githubStatusSuccess = "success"
 	githubStatusError   = "failure"
 
-	defaultImage   = "xotelia/deployer-ansible:latest"
+	defaultImage   = "luxifer/deployer-ansible:latest"
 	defaultTimeout = 5 * time.Second
 )
 

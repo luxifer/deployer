@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Xotelia/deployer/utils"
+	"github.com/luxifer/deployer/utils"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/dustin/go-humanize"

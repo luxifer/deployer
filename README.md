@@ -23,10 +23,10 @@ Dependencies:
 
 ### Runner
 
-See https://github.com/Xotelia/deployer-ansible
+See https://github.com/luxifer/deployer-ansible
 
 ```bash
-$ docker pull xotelia/deployer-ansible
+$ docker pull luxifer/deployer-ansible
 ```
 
 ### Local
@@ -43,8 +43,8 @@ $ ./deployer
 If you want to run the deployer server inside a container:
 
 ```bash
-$ docker build -t xotelia/deployer .
-$ docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name deployer [OPTIONS] xotelia/deployer
+$ docker build -t luxifer/deployer .
+$ docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name deployer [OPTIONS] luxifer/deployer
 ```
 
 The server does not need to be run as a privileged container because it will not create child container but sibling. That's why we have to share the docker socket (if only the target docker server listen on a socket).
